@@ -111,6 +111,61 @@ END //
 
 DELIMITER ;
 
+
+# Exercise: Create SQL queries to add and update bookings
+#Task 1
+DELIMITER //
+CREATE PROCEDURE AddBooking (IN BookingID INT,IN CustomerID INT,IN TableNo INT,IN BookingDate date)
+BEGIN
+	Declare rowcount int;
+	select count(1) into rowcount from bookings where BookingSlotDate = BookingDate and TableNo = TableNo;
+    if rowcount < 1 then
+    insert into bookings(BookingID,CustomerID,TableNo,BookingSlotDate)
+	values(BookingID,CustomerID,TableNo,BookingDate);
+    select concat("new booking added") as Confirmation;
+    else
+    select concat("table already booked") as Confirmation; 
+
+END
+DELIMETER ;
+
+
+#Task 2
+DELIMITER //
+CREATE PROCEDURE UpdateBooking (in bookingdate date,in bookingid int)
+BEGIN
+	declare rowcount int;
+    declare customerid int;
+    declare tableno int;
+    
+    select count(1) into rowcount from bookings where BookingID = bookingid;
+    
+    if rowcount < 1 then
+		select concat("Booking not found") as Confirmation; 
+    else
+		update bookings set BookingSlotDate = bookingdate where BookingID = bookingid;
+        select concat("Booking ",bookingid," update") as Confirmation;
+	end if;
+END
+DELIMETER ;
+
+#Task 3
+DELIMITER //
+CREATE PROCEDURE CancelBooking (in bookingid int)
+BEGIN
+	declare rowcount int;
+    select count(1) into rowcount from bookings where BookingID = bookingid;
+    
+    if rowcount < 1 then
+		select concat("Booking not found") as Confirmation; 
+    else
+		DELETE from bookings where BookingID = bookingid;
+        select concat("Booking ",bookingid," deleted") as Confirmation;
+        
+	end if;
+END
+DELIMETER ;
+
 select concat("hello"," i am here") as confirmation
 
 
